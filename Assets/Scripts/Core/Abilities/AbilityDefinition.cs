@@ -1,0 +1,42 @@
+using UnityEngine;
+using System.Collections.Generic;
+
+[CreateAssetMenu]
+public class AbilityDefinition : ScriptableObject
+{
+    public string Id => id;
+    public float Cooldown => cooldown;
+    public float CastTime => castTime;
+    public InterruptType InterruptType => interruptType;
+    public TargetResolver TargetResolver => targetResolver;
+    public IReadOnlyList<EffectDefinition> Effects => effects;
+
+    [SerializeField] private string id;
+    [SerializeField] private float cooldown;
+    [SerializeField] private float castTime;
+    [SerializeField] private InterruptType interruptType;
+    [SerializeField] private TargetResolver targetResolver;
+    [SerializeField] private List<EffectDefinition> effects;
+
+    public bool CanBeInterruptedBy(InterruptType sourceInterruptType)
+    {
+        if (interruptType == InterruptType.None)
+            return false;
+
+        if (interruptType == InterruptType.Uninterruptible)
+            return false;
+
+        if (interruptType == InterruptType.Hard && sourceInterruptType == InterruptType.Soft)
+            return false;
+
+        return true;
+    }
+}
+
+public enum InterruptType
+{
+    None,
+    Soft,
+    Hard,
+    Uninterruptible
+}
