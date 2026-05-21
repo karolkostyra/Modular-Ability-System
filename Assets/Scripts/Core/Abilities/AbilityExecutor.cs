@@ -1,6 +1,5 @@
-using Cysharp.Threading.Tasks;
-using System;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class AbilityExecutor
 {
@@ -8,19 +7,20 @@ public class AbilityExecutor
     {
     }
 
-    public async UniTask Execute(AbilityContext context)
+    public async UniTask Execute(AbilityContext context, AbilityExecutionSession session)
     {
         if (context == null)
             return;
 
-        var ability = context.AbilityInstance;
-
-        var session = ability.CreateExecutionSession();
         if (session == null)
             return;
 
+        var ability = context.AbilityInstance;
+
         float duration = ability.Definition.CastTime;
         float t = 0f;
+
+        session.StartCast();
 
         while (t < duration)
         {

@@ -1,9 +1,16 @@
+using System;
+
 public class AbilityExecutionSession
 {
     public AbilityInstance AbilityInstance { get; }
     public ExecutionState State { get; private set; }
     public float CastProgress { get; private set; }
     public bool IsFinished { get; private set; }
+
+    public Action<AbilityExecutionSession> Finished;
+    public event Action<AbilityCastStartedEvent> CastStartedEvent;
+    public event Action<AbilityCastInterruptedEvent> CastInterruptedEvent;
+    public event Action<AbilityCastFinishedEvent> CastFinishedEvent;
 
     private float castTime;
 
@@ -15,12 +22,17 @@ public class AbilityExecutionSession
     public AbilityExecutionSession(AbilityInstance ability)
     {
         AbilityInstance = ability;
-        State = ExecutionState.Running;
         castTime = ability.Definition.CastTime;
         ExecutionId = ++globalId;
     }
 
     public bool IsActive => State == ExecutionState.Running;
+
+    public void StartCast()
+    {
+        State = ExecutionState.Running;
+        CastStartedEvent?.Invoke(new AbilityCastStartedEvent(this));
+    }
 
     public void Tick(float deltaTime)
     {
@@ -47,6 +59,9 @@ public class AbilityExecutionSession
             return;
 
         State = ExecutionState.Interrupted;
+
+        CastInterruptedEvent?.Invoke(new AbilityCastInterruptedEvent(this));
+
         Complete(false);
     }
 
@@ -57,11 +72,14 @@ public class AbilityExecutionSession
 
         State = ExecutionState.Succeeded;
 
+        CastFinishedEvent?.Invoke(new AbilityCastFinishedEvent(this));
+
         Complete(true);
     }
 
     private void Complete(bool success)
     {
+        Finished?.Invoke(this);
         AbilityInstance.OnSessionFinished();
 
         if (success)

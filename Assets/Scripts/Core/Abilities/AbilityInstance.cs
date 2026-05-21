@@ -1,12 +1,12 @@
 public class AbilityInstance
 {
     public AbilityDefinition Definition { get; }
+    public AbilityExecutionSession ActiveSession { get; private set; }
     public bool IsOnCooldown => cooldownRemaining > 0f;
     public float CooldownRemaining => cooldownRemaining;
 
     private float cooldownRemaining;
 
-    public AbilityExecutionSession ActiveSession { get; private set; }
 
     public AbilityInstance(AbilityDefinition abilityDefinition)
     {

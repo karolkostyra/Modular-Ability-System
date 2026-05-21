@@ -8,17 +8,10 @@ public class AbilitySystem : MonoBehaviour
     [SerializeField] private List<AbilityDefinition> abilityDefinitions;
 
     private List<AbilityInstance> abilities;
-    private AbilityExecutor executor;
-
     private AbilityInstance activeAbility;
 
-    private void Awake()
-    {
-        abilities = abilityDefinitions.Select(x => new AbilityInstance(x))
-                                      .ToList();
-
-        executor = new AbilityExecutor();
-    }
+    private AbilityExecutor executor;
+    private AbilitySessionEventRouter eventRouter;
 
     private void Update()
     {
@@ -26,6 +19,15 @@ public class AbilitySystem : MonoBehaviour
         {
             ability.Tick(Time.deltaTime);
         }
+    }
+
+    public void Initialize(AbilityExecutor abilityExecutor, AbilitySessionEventRouter eventRouter)
+    {
+        this.executor = abilityExecutor;
+        this.eventRouter = eventRouter;
+
+        abilities = abilityDefinitions.Select(x => new AbilityInstance(x))
+                                      .ToList();
     }
 
     public void TryCast(int index)
@@ -50,7 +52,17 @@ public class AbilitySystem : MonoBehaviour
             AbilityInstance = abilityInstance
         };
 
-        executor.Execute(context).Forget();
+        var session = abilityInstance.CreateExecutionSession();
+
+        if (session == null)
+        {
+            Debug.LogError($"Session was not createad!");
+            return;
+        }
+
+        eventRouter.Bind(session);
+
+        executor.Execute(context, session).Forget();
     }
 
     public bool TryInterrupt(AbilityInstance ability, InterruptType interruptType)
@@ -74,6 +86,9 @@ public class AbilitySystem : MonoBehaviour
         TryInterrupt(activeAbility, InterruptType.Hard);
     }
 
+    #region DEBUG
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
     private void OnGUI()
     {
         GUIStyle style = new GUIStyle(GUI.skin.label)
@@ -107,4 +122,7 @@ public class AbilitySystem : MonoBehaviour
             y += height + 10f;
         }
     }
+#endif
+
+    #endregion
 }
