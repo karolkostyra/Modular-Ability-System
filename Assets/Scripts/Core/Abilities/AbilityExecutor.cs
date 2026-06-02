@@ -39,9 +39,14 @@ public class AbilityExecutor
         var targets = ability.Definition.TargetResolver
                                         .ResolveTargets(context);
 
-        foreach (var effect in ability.Definition.Effects)
+        context.Targets = targets;
+        
+        if (context.Targets != null && context.Targets.Count != 0)
         {
-            effect.Apply(context);
+            foreach (var action in ability.Definition.Actions)
+            {
+                action.Execute(context);
+            }
         }
 
         session.FinishSuccess();

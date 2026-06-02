@@ -6,5 +6,5 @@ public class AbilityContext
     public GameObject Caster;
     public Vector3 Origin;
     public AbilityInstance AbilityInstance;
-    public List<IDamageable> Targets;
+    public List<IAbilityTarget> Targets;
 }

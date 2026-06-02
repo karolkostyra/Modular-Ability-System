@@ -4,11 +4,11 @@ using UnityEngine;
 [CreateAssetMenu]
 public class SelfTargetResolver : TargetResolver
 {
-    public override List<IDamageable> ResolveTargets(AbilityContext context)
+    public override List<IAbilityTarget> ResolveTargets(AbilityContext context)
     {
-        var result = new List<IDamageable>();
+        var result = new List<IAbilityTarget>();
 
-        if (context.Caster.TryGetComponent<IDamageable>(out var damageable))
+        if (context.Caster.TryGetComponent<IAbilityTarget>(out var damageable))
         {
             result.Add(damageable);
         }

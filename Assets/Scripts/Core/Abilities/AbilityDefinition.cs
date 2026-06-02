@@ -9,14 +9,14 @@ public class AbilityDefinition : ScriptableObject
     public float CastTime => castTime;
     public InterruptType InterruptType => interruptType;
     public TargetResolver TargetResolver => targetResolver;
-    public IReadOnlyList<EffectDefinition> Effects => effects;
+    public IReadOnlyList<AbilityActionDefinition> Actions => actions;
 
     [SerializeField] private string id;
     [SerializeField] private float cooldown;
     [SerializeField] private float castTime;
     [SerializeField] private InterruptType interruptType;
     [SerializeField] private TargetResolver targetResolver;
-    [SerializeField] private List<EffectDefinition> effects;
+    [SerializeField] private List<AbilityActionDefinition> actions;
 
     public bool CanBeInterruptedBy(InterruptType sourceInterruptType)
     {

@@ -7,7 +7,6 @@ public class AbilityInstance
 
     private float cooldownRemaining;
 
-
     public AbilityInstance(AbilityDefinition abilityDefinition)
     {
         Definition = abilityDefinition;
