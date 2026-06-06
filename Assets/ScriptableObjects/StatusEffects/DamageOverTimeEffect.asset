@@ -9,7 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce872027844276a4a8ee7aee7ba5f7a4, type: 3}
-  m_Name: DealDamageActionDefinition
-  m_EditorClassIdentifier: Assembly-CSharp::DealDamageAction
-  damage: 12
+  m_Script: {fileID: 11500000, guid: dd788c0ff50851b488e43030618f9526, type: 3}
+  m_Name: DamageOverTimeEffect
+  m_EditorClassIdentifier: Assembly-CSharp::DamageOverTimeEffect

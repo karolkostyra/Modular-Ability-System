@@ -10,19 +10,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 08a904019f3563d4f8c1b72865b4d797, type: 3}
-  m_Name: AbilityDefinition_1
+  m_Name: FireballDefinition
   m_EditorClassIdentifier: Assembly-CSharp::AbilityDefinition
-  id: ability_01
-  cooldown: 5
-  castTime: 3
+  id: Fireball
+  cooldown: 1
+  castTime: 2
   interruptType: 2
   targetResolver: {fileID: 11400000, guid: dfeae0a78b31bad40b540b00a874271f, type: 2}
   actions:
-  - rid: 3379673468472131645
+  - rid: 3379673468472131644
+  - rid: 3379673468472131650
   references:
     version: 2
     RefIds:
-    - rid: 3379673468472131645
+    - rid: 3379673468472131644
       type: {class: DealDamageAction, ns: , asm: Assembly-CSharp}
       data:
-        damage: 12
+        damage: 25
+    - rid: 3379673468472131650
+      type: {class: ApplyStatusAction, ns: , asm: Assembly-CSharp}
+      data:
+        status: {fileID: 11400000, guid: bee2600448014b546858f728c4bc7969, type: 2}
+        baseDuration: 4
+        isStacabkle: 0
+        maxStacks: 5
+        baseDamage: 3

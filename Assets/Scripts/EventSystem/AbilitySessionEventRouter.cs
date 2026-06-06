@@ -11,21 +11,21 @@ public class AbilitySessionEventRouter
     {
         session.Finished += OnSessionFinished;
 
-        session.CastStartedEvent += Bind<AbilityCastStartedEvent>;
-        session.CastInterruptedEvent += Bind<AbilityCastInterruptedEvent>;
-        session.CastFinishedEvent += Bind<AbilityCastFinishedEvent>;
+        session.CastStartedEvent += Publish<AbilityCastStartedEvent>;
+        session.CastInterruptedEvent += Publish<AbilityCastInterruptedEvent>;
+        session.CastFinishedEvent += Publish<AbilityCastFinishedEvent>;
     }
 
     public void Unbind(AbilityExecutionSession session)
     {
         session.Finished -= OnSessionFinished;
 
-        session.CastStartedEvent -= Bind<AbilityCastStartedEvent>;
-        session.CastInterruptedEvent -= Bind<AbilityCastInterruptedEvent>;
-        session.CastFinishedEvent -= Bind<AbilityCastFinishedEvent>;
+        session.CastStartedEvent -= Publish<AbilityCastStartedEvent>;
+        session.CastInterruptedEvent -= Publish<AbilityCastInterruptedEvent>;
+        session.CastFinishedEvent -= Publish<AbilityCastFinishedEvent>;
     }
 
-    private void Bind<T>(T eventT)
+    private void Publish<T>(T eventT)
     {
         eventBus.Publish(eventT);
     }

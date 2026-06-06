@@ -1,8 +1,22 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class StatusDefinition : ScriptableObject
 {
-    public float Duration => duration;
+    public StatusLifetimeType LifetimeType => lifetimeType;
+    public List<StatusEffectDefinition> Effects => effects;
+    public float TickInterval => tickInterval;
 
-    [SerializeField] private float duration;
+
+    [SerializeField] private StatusLifetimeType lifetimeType;
+    [SerializeField] private List<StatusEffectDefinition> effects;
+    [SerializeField] private float tickInterval = 1f;
+}
+
+public enum StatusLifetimeType
+{
+    Timed,
+    Permanent,
+    Conditional
 }

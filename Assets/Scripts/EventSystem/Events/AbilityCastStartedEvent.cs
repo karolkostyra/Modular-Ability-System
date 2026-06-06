@@ -1,6 +1,6 @@
 public readonly struct AbilityCastStartedEvent
 {
-    public readonly AbilityExecutionSession Session;
+    public readonly AbilityExecutionSession Session { get; }
 
     public AbilityCastStartedEvent(AbilityExecutionSession session)
     {

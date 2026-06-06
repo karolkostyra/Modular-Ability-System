@@ -7,6 +7,10 @@ public class CombatLogger
         bus.Subscribe<AbilityCastStartedEvent>(OnCastStarted);
         bus.Subscribe<AbilityCastInterruptedEvent>(OnCastInterrupted);
         bus.Subscribe<AbilityCastFinishedEvent>(OnCastFinished);
+
+        bus.Subscribe<StatusAppliedEvent>(OnStatusApplied);
+        bus.Subscribe<StatusRefreshedEvent>(OnStatusRefreshed);
+        bus.Subscribe<StatusExpiredEvent>(OnStatusExpired);
     }
 
     private void OnCastStarted(AbilityCastStartedEvent e)
@@ -22,5 +26,20 @@ public class CombatLogger
     private void OnCastFinished(AbilityCastFinishedEvent e)
     {
         Debug.Log($"[OnCastFinished] {e.Session.AbilityInstance.Definition.name}");
+    }
+
+    private void OnStatusApplied(StatusAppliedEvent e)
+    {
+        Debug.Log($"[OnStatusApplied] {e.StatusInstance.Definition.name}");
+    }
+
+    private void OnStatusRefreshed(StatusRefreshedEvent e)
+    {
+        Debug.Log($"[OnStatusRefreshed] {e.StatusInstance.Definition.name}");
+    }
+
+    private void OnStatusExpired(StatusExpiredEvent e)
+    {
+        Debug.Log($"[OnStatusExpired] {e.StatusInstance.Definition.name}");
     }
 }

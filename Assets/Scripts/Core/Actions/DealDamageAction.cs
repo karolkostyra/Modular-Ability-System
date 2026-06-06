@@ -1,7 +1,8 @@
+using System;
 using UnityEngine;
 
-[CreateAssetMenu]
-public class DealDamageAction : AbilityActionDefinition
+[Serializable]
+public class DealDamageAction : AbilityAction
 {
     public float Damage => damage;
 
@@ -13,5 +14,10 @@ public class DealDamageAction : AbilityActionDefinition
         {
             target.TakeDamage(damage);
         }
+    }
+
+    public override string GetDisplayName()
+    {
+        return $"Deal Damage ({damage})";
     }
 }

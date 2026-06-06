@@ -2,17 +2,27 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, IAbilityTarget
 {
-    //test
-
     public float health = 100;
-    
+
+    private StatusSystem statusSystem;
+
+    public void Initialize(StatusSystem statusSystem)
+    {
+        this.statusSystem = statusSystem;
+    }
+
     public void TakeDamage(float amount)
     {
         health -= amount;
     }
 
-    public void ApplyStatus(StatusDefinition status)
+    public void ApplyStatus(StatusDefinition statusDefinition, StatusApplicationContext statusApplicationContext)
     {
-        //TO_DO: delegate this action to StatusSystem
+        statusSystem.Apply(statusDefinition, statusApplicationContext);
+    }
+
+    private void Update()
+    {
+        statusSystem.Tick(Time.deltaTime);
     }
 }

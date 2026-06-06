@@ -18,4 +18,11 @@ MonoBehaviour:
   interruptType: 1
   targetResolver: {fileID: 11400000, guid: dfeae0a78b31bad40b540b00a874271f, type: 2}
   actions:
-  - {fileID: 11400000, guid: c779c1a6294d7b5468e1d687a58de3a6, type: 2}
+  - rid: 3379673468472131646
+  references:
+    version: 2
+    RefIds:
+    - rid: 3379673468472131646
+      type: {class: DealDamageAction, ns: , asm: Assembly-CSharp}
+      data:
+        damage: 21
