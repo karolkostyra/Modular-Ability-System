@@ -10,6 +10,7 @@ public class ApplyStatusAction : AbilityAction
     [SerializeField] private bool isStacabkle;
     [SerializeField] private int maxStacks;
     [SerializeField] private float baseDamage;
+    [SerializeField] private StatusApplicationRule applicationRule;
 
     public override void Execute(AbilityContext context)
     {
@@ -18,6 +19,7 @@ public class ApplyStatusAction : AbilityAction
             var statusContext = new StatusApplicationContext
             {
                 SourceAbilityContext = context,
+                ApplicationRule = applicationRule,
                 BaseDuration = baseDuration,
                 //IsStackable = isStacabkle,
                 //MaxStacks = maxStacks,

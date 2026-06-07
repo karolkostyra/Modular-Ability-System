@@ -12,22 +12,56 @@ public class StatusSystem
 
     public void Apply(StatusDefinition definition, StatusApplicationContext applicationContext)
     {
-        StatusInstance existing = FindExisting(definition);
+        StatusInstance statusInstance = FindExistingStatus(definition);
 
-        if (existing != null && definition.LifetimeType == StatusLifetimeType.Timed)
+        if (statusInstance == null)
         {
-            existing.Refresh(definition, applicationContext);
-            StatusRefreshedEvent?.Invoke(new StatusRefreshedEvent(existing));
+            statusInstance = CreateNewStatus(definition, applicationContext);
+            activeStatuses.Add(statusInstance);
+            StatusAppliedEvent?.Invoke(new StatusAppliedEvent(statusInstance));
 
-            Debug.Log($"Refresh {definition.name}");
+            Debug.Log($"Applied {definition.name}");
             return;
         }
+        else if (!definition.CanReapply)
+        {
+            return;
+        }
+        else
+        {
+            ManageStatusApplicationRule(statusInstance);
+        }
+    }
 
-        StatusInstance statusInstance = new StatusInstance(definition, applicationContext);
-        activeStatuses.Add(statusInstance);
-        StatusAppliedEvent?.Invoke(new StatusAppliedEvent(statusInstance));
+    private void ManageStatusApplicationRule(StatusInstance statusInstance)
+    {
+        var context = statusInstance.ApplicationContext;
 
-        Debug.Log($"Applied {definition.name}");
+        switch (context.ApplicationRule)
+        {
+            case StatusApplicationRule.Refresh:
+                statusInstance.RefreshDuration(context.BaseDuration);
+                StatusRefreshedEvent?.Invoke(new StatusRefreshedEvent(statusInstance));
+                Debug.Log($"Refresh {statusInstance.Definition.name}");
+                return;
+
+            case StatusApplicationRule.ExtendDuration:
+                statusInstance.ExtendDuration(context.BaseDuration);
+                StatusRefreshedEvent?.Invoke(new StatusRefreshedEvent(statusInstance));
+                Debug.Log($"Extend {statusInstance.Definition.name}");
+                return;
+
+            case StatusApplicationRule.Stack:
+                statusInstance.AddStack();
+                statusInstance.ExtendDuration(context.BaseDuration);
+                StatusRefreshedEvent?.Invoke(new StatusRefreshedEvent(statusInstance));
+                Debug.Log($"Stack {statusInstance.Definition.name}");
+                return;
+
+            case StatusApplicationRule.Ignore:
+                Debug.Log($"Ignore {statusInstance.Definition.name}");
+                return;
+        }
     }
 
     public void Tick(float deltaTime)
@@ -36,23 +70,44 @@ public class StatusSystem
         {
             var status = activeStatuses[i];
 
-            status.Tick(deltaTime);
-            Debug.Log($"Ticked {status.Definition.name}");
+            TickLifetime(status, deltaTime);
+            TickEffects(status, deltaTime);
 
-            while (status.TickTimer >= status.Definition.TickInterval)
-            {
-                status.TickTimer -= status.Definition.TickInterval;
-
-                ExecuteEffects(status);
-            }
-
-            if (status.IsExpired)
+            if (IsExpired(status))
             {
                 activeStatuses.RemoveAt(i);
                 StatusExpiredEvent?.Invoke(new StatusExpiredEvent(status));
 
                 Debug.Log($"Expired {status.Definition.name}");
             }
+        }
+    }
+
+    private void TickLifetime(StatusInstance status, float dt)
+    {
+        switch (status.Definition.LifetimeType)
+        {
+            case StatusLifetimeType.Timed:
+                status.ReduceDuration(dt);
+                break;
+
+            case StatusLifetimeType.Conditional:
+                //TO_DO: manage conditions
+                break;
+
+            case StatusLifetimeType.Permanent:
+                break;
+        }
+    }
+
+    private void TickEffects(StatusInstance status, float dt)
+    {
+        status.TickTimer += dt;
+
+        while (status.TickTimer >= status.Definition.TickInterval)
+        {
+            status.TickTimer -= status.Definition.TickInterval;
+            ExecuteEffects(status);
         }
     }
 
@@ -64,8 +119,18 @@ public class StatusSystem
         }
     }
 
-    private StatusInstance FindExisting(StatusDefinition definition)
+    private bool IsExpired(StatusInstance status)
+    {
+        return status.Definition.LifetimeType == StatusLifetimeType.Timed && status.RemainingDuration <= 0;
+    }
+
+    private StatusInstance FindExistingStatus(StatusDefinition definition)
     {
         return activeStatuses.Find(s => s.Definition == definition);
+    }
+
+    private StatusInstance CreateNewStatus(StatusDefinition definition, StatusApplicationContext applicationContext)
+    {
+        return new StatusInstance(definition, applicationContext);
     }
 }

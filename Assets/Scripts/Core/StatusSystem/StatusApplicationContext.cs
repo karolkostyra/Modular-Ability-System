@@ -1,8 +1,7 @@
-using UnityEngine;
-
 public struct StatusApplicationContext
 {
     public AbilityContext SourceAbilityContext;
+    public StatusApplicationRule ApplicationRule;
 
     public float BaseDuration;
     //public bool IsStackable;

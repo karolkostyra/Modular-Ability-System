@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BurnStatusDefinition
   m_EditorClassIdentifier: Assembly-CSharp::BurnStatusDefinition
   lifetimeType: 0
+  canReapply: 1
   effects:
   - {fileID: 11400000, guid: 34d4d095af32ef04f876275d1ff72a3b, type: 2}
   tickInterval: 1

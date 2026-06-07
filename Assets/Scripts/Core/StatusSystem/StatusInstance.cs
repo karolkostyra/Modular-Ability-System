@@ -15,16 +15,33 @@ public class StatusInstance
         RemainingDuration = CalculateRemainingDuration();
     }
 
-    public void Tick(float deltaTime)
+    public void ReduceDuration(float deltaTime)
     {
         if (Definition.LifetimeType != StatusLifetimeType.Timed)
             return;
 
         RemainingDuration -= deltaTime;
-        TickTimer += deltaTime;
+    }
 
-        if (RemainingDuration <= 0)
-            IsExpired = true;
+    public void ExtendDuration(float duration)
+    {
+        if (Definition.LifetimeType != StatusLifetimeType.Timed)
+            return;
+
+        RemainingDuration += duration;
+    }
+
+    public void RefreshDuration(float duration)
+    {
+        if (Definition.LifetimeType != StatusLifetimeType.Timed)
+            return;
+
+        RemainingDuration = duration;
+    }
+
+    public void AddStack()
+    {
+        Stacks++;
     }
 
     public void Refresh(StatusDefinition statusDefinition, StatusApplicationContext context)
