@@ -33,56 +33,44 @@ public class StatusDefinitionEditor : Editor
 
     private void DrawActionsList()
     {
-        for (int i = 0; i < status.Conditions.Count; i++)
+        var conditionsProp = serializedObject.FindProperty("conditions");
+
+        for (int i = 0; i < conditionsProp.arraySize; i++)
         {
-            var condition = status.Conditions[i];
+            var element = conditionsProp.GetArrayElementAtIndex(i);
 
             EditorGUILayout.BeginVertical("box");
 
             EditorGUILayout.BeginHorizontal();
 
-            GUILayout.Label(condition.GetDisplayName(), EditorStyles.boldLabel);
+            string label = element.managedReferenceValue != null ? element.managedReferenceValue.GetType().Name : "Null";
+
+            GUILayout.Label(label, EditorStyles.boldLabel);
 
             if (GUILayout.Button("↑", GUILayout.Width(25)) && i > 0)
             {
-                Undo.RecordObject(status, "Move Condition Up");
-                (status.Conditions[i - 1], status.Conditions[i]) = (status.Conditions[i], status.Conditions[i - 1]);
-                EditorUtility.SetDirty(status);
+                conditionsProp.MoveArrayElement(i, i - 1);
                 break;
             }
 
-            if (GUILayout.Button("↓", GUILayout.Width(25)) && i < status.Conditions.Count - 1)
+            if (GUILayout.Button("↓", GUILayout.Width(25)) && i < conditionsProp.arraySize - 1)
             {
-                Undo.RecordObject(status, "Move Condition Down");
-                (status.Conditions[i + 1], status.Conditions[i]) = (status.Conditions[i], status.Conditions[i + 1]);
-                EditorUtility.SetDirty(status);
+                conditionsProp.MoveArrayElement(i, i + 1);
                 break;
             }
 
             if (GUILayout.Button("X", GUILayout.Width(25)))
             {
-                Undo.RecordObject(status, "Remove Condition");
-                status.Conditions.RemoveAt(i);
-                EditorUtility.SetDirty(status);
+                conditionsProp.DeleteArrayElementAtIndex(i);
                 break;
             }
 
             EditorGUILayout.EndHorizontal();
 
-            DrawActionFields(condition);
+            EditorGUILayout.PropertyField(element, true);
 
             EditorGUILayout.EndVertical();
         }
-    }
-
-    private void DrawActionFields(StatusCondition condition)
-    {
-        var so = new SerializedObject(status);
-        var conditionsProp = so.FindProperty("conditions");
-
-        EditorGUILayout.PropertyField(conditionsProp.GetArrayElementAtIndex(status.Conditions.IndexOf(condition)), true);
-
-        so.ApplyModifiedProperties();
     }
 
     private void ShowAddMenu()
@@ -103,12 +91,17 @@ public class StatusDefinitionEditor : Editor
 
     private void AddCondition(Type type)
     {
-        var action = (StatusCondition)Activator.CreateInstance(type);
+        serializedObject.Update();
 
-        Undo.RecordObject(status, "Add Condition");
+        var conditionsProp = serializedObject.FindProperty("conditions");
 
-        status.Conditions.Add(action);
+        int index = conditionsProp.arraySize;
+        conditionsProp.InsertArrayElementAtIndex(index);
 
-        EditorUtility.SetDirty(status);
+        var newElement = conditionsProp.GetArrayElementAtIndex(index);
+
+        newElement.managedReferenceValue = Activator.CreateInstance(type);
+
+        serializedObject.ApplyModifiedProperties();
     }
 }

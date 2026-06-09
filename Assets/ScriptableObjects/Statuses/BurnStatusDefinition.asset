@@ -17,7 +17,12 @@ MonoBehaviour:
   tickInterval: 1
   effects:
   - {fileID: 11400000, guid: 34d4d095af32ef04f876275d1ff72a3b, type: 2}
-  conditions: []
+  conditions:
+  - rid: 3379673568377569344
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 3379673568377569344
+      type: {class: TargetHealthBelowCondition, ns: , asm: Assembly-CSharp}
+      data:
+        threshold: 0
