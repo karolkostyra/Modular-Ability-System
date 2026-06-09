@@ -73,13 +73,32 @@ public class StatusSystem
             TickLifetime(status, deltaTime);
             TickEffects(status, deltaTime);
 
-            if (IsExpired(status))
+            if (ShouldExpire(status))
             {
+                ExpireStatus(status);
                 activeStatuses.RemoveAt(i);
                 StatusExpiredEvent?.Invoke(new StatusExpiredEvent(status));
 
                 Debug.Log($"Expired {status.Definition.name}");
             }
+        }
+    }
+
+    private bool ShouldExpire(StatusInstance status)
+    {
+        switch (status.Definition.LifetimeType)
+        {
+            case StatusLifetimeType.Timed:
+                return status.RemainingDuration <= 0;
+
+            case StatusLifetimeType.Conditional:
+                return !AreConditionsMet(status);
+
+            case StatusLifetimeType.Permanent:
+                return false;
+
+            default:
+                return false;
         }
     }
 
@@ -92,7 +111,6 @@ public class StatusSystem
                 break;
 
             case StatusLifetimeType.Conditional:
-                //TO_DO: manage conditions
                 break;
 
             case StatusLifetimeType.Permanent:
@@ -119,9 +137,20 @@ public class StatusSystem
         }
     }
 
-    private bool IsExpired(StatusInstance status)
+    private bool AreConditionsMet(StatusInstance status)
     {
-        return status.Definition.LifetimeType == StatusLifetimeType.Timed && status.RemainingDuration <= 0;
+        foreach (var condition in status.Definition.Conditions)
+        {
+            if (!condition.Evaluate(status))
+                return false;
+        }
+
+        return true;
+    }
+
+    private void ExpireStatus(StatusInstance status)
+    {
+        status.MarkAsExpired();
     }
 
     private StatusInstance FindExistingStatus(StatusDefinition definition)

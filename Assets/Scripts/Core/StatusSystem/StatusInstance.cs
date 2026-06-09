@@ -49,6 +49,11 @@ public class StatusInstance
         RemainingDuration = CalculateRemainingDuration();
     }
 
+    public void MarkAsExpired()
+    {
+        IsExpired = true;
+    }
+
     private float CalculateRemainingDuration()
     {
         if (Definition.LifetimeType == StatusLifetimeType.Timed)

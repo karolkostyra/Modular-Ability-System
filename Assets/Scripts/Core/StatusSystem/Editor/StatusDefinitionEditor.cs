@@ -18,14 +18,22 @@ public class StatusDefinitionEditor : Editor
 
         DrawPropertiesExcluding(serializedObject, "conditions");
 
-        EditorGUILayout.Space(10);
+        var lifetimeProp = serializedObject.FindProperty("lifetimeType");
+
         EditorGUILayout.LabelField("Conditions", EditorStyles.boldLabel);
 
-        DrawActionsList();
-
-        if (GUILayout.Button("Add Condition"))
+        if ((StatusLifetimeType)lifetimeProp.enumValueIndex == StatusLifetimeType.Conditional)
         {
-            ShowAddMenu();
+            DrawActionsList();
+
+            if (GUILayout.Button("Add Condition"))
+            {
+                ShowAddMenu();
+            }
+        }
+        else
+        {
+            EditorGUILayout.HelpBox("Conditions are only used for Conditional lifetime type.", MessageType.Info);
         }
 
         serializedObject.ApplyModifiedProperties();

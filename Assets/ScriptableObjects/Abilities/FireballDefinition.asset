@@ -30,7 +30,7 @@ MonoBehaviour:
     - rid: 3379673468472131650
       type: {class: ApplyStatusAction, ns: , asm: Assembly-CSharp}
       data:
-        status: {fileID: 11400000, guid: bee2600448014b546858f728c4bc7969, type: 2}
+        status: {fileID: 11400000, guid: 85b1cc809a1111b4ba5a4eff1a959ff4, type: 2}
         baseDuration: 4
         isStacabkle: 0
         maxStacks: 5

@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, IAbilityTarget
 {
-    public float health = 100;
+    public float Health => health;
+
+    [SerializeField] private float health = 100;
 
     private StatusSystem statusSystem;
 

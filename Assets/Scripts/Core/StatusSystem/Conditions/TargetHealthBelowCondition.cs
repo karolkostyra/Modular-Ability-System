@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 [Serializable]
 public class TargetHealthBelowCondition : StatusCondition
@@ -7,7 +8,16 @@ public class TargetHealthBelowCondition : StatusCondition
 
     public override bool Evaluate(StatusInstance status)
     {
-        return true; //TO_DO
-        //return status.ApplicationContext.SourceAbilityContext.Targets.Health <= threshold;
+        var targets = status.ApplicationContext.SourceAbilityContext.Targets;
+
+        foreach (var item in targets)
+        {
+            if (item.Health > threshold)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
