@@ -15,6 +15,7 @@ public class StatusEventRouter
         statusSystem.StatusAppliedEvent += Publish<StatusAppliedEvent>;
         statusSystem.StatusRefreshedEvent += Publish<StatusRefreshedEvent>;
         statusSystem.StatusExpiredEvent += Publish<StatusExpiredEvent>;
+        statusSystem.StatusRemovedEvent += Publish<StatusRemovedEvent>;
     }
 
     public void Unbind(StatusSystem statusSystem)
@@ -25,6 +26,7 @@ public class StatusEventRouter
         statusSystem.StatusAppliedEvent -= Publish<StatusAppliedEvent>;
         statusSystem.StatusRefreshedEvent -= Publish<StatusRefreshedEvent>;
         statusSystem.StatusExpiredEvent -= Publish<StatusExpiredEvent>;
+        statusSystem.StatusRemovedEvent -= Publish<StatusRemovedEvent>;
     }
 
     private void Publish<T>(T eventT)

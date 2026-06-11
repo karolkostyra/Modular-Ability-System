@@ -7,6 +7,7 @@ public class StatusSystem
     public event Action<StatusAppliedEvent> StatusAppliedEvent;
     public event Action<StatusRefreshedEvent> StatusRefreshedEvent;
     public event Action<StatusExpiredEvent> StatusExpiredEvent;
+    public event Action<StatusRemovedEvent> StatusRemovedEvent;
 
     private readonly List<StatusInstance> activeStatuses = new();
 
@@ -76,12 +77,64 @@ public class StatusSystem
             if (ShouldExpire(status))
             {
                 ExpireStatus(status);
-                activeStatuses.RemoveAt(i);
+                Remove(status);
                 StatusExpiredEvent?.Invoke(new StatusExpiredEvent(status));
 
                 Debug.Log($"Expired {status.Definition.name}");
             }
         }
+    }
+
+    public bool Remove(StatusInstance status)
+    {
+        if (status == null)
+            return false;
+
+        if (!activeStatuses.Remove(status))
+            return false;
+
+        //TODO: implement CleanupStatus(status)
+
+        StatusRemovedEvent?.Invoke(new StatusRemovedEvent(status));
+
+        Debug.Log($"Removed {status.Definition.name}");
+
+        return true;
+    }
+
+    public bool Remove(StatusDefinition definition)
+    {
+        var status = FindExistingStatus(definition);
+        return Remove(status);
+    }
+
+    public int RemoveAll(Predicate<StatusInstance> predicate)
+    {
+        int removed = 0;
+
+        for (int i = activeStatuses.Count - 1; i >= 0; i--)
+        {
+            if (!predicate(activeStatuses[i]))
+                continue;
+
+            Remove(activeStatuses[i]);
+            removed++;
+        }
+
+        return removed;
+    }
+
+    public void Clear()
+    {
+        for (int i = activeStatuses.Count - 1; i >= 0; i--)
+        {
+            Remove(activeStatuses[i]);
+        }
+    }
+
+    public bool HasStatus(StatusDefinition definition)
+    {
+        return FindExistingStatus(definition) != null;
     }
 
     private bool ShouldExpire(StatusInstance status)

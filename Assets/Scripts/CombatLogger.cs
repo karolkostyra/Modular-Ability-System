@@ -11,6 +11,7 @@ public class CombatLogger
         bus.Subscribe<StatusAppliedEvent>(OnStatusApplied);
         bus.Subscribe<StatusRefreshedEvent>(OnStatusRefreshed);
         bus.Subscribe<StatusExpiredEvent>(OnStatusExpired);
+        bus.Subscribe<StatusRemovedEvent>(OnStatusRemoved);
     }
 
     private void OnCastStarted(AbilityCastStartedEvent e)
@@ -41,5 +42,10 @@ public class CombatLogger
     private void OnStatusExpired(StatusExpiredEvent e)
     {
         Debug.Log($"[OnStatusExpired] {e.StatusInstance.Definition.name}");
+    }
+
+    private void OnStatusRemoved(StatusRemovedEvent e)
+    {
+        Debug.Log($"[OnStatusRemoved] {e.StatusInstance.Definition.name}");
     }
 }
