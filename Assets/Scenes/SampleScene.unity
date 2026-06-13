@@ -732,7 +732,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameplayInstaller
   abilitySystem: {fileID: 2016480590}
-  statusContainer: {fileID: 11400000, guid: cada82d429404e647bea2cde3ee82579, type: 2}
 --- !u!4 &940936162
 Transform:
   m_ObjectHideFlags: 0
@@ -1517,6 +1516,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fb92730e95e3d54f86e570954d93f42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  baseStats:
+    baseDamage: 10
+    moveSpeed: 5
+    armor: 100
   health: 100
 --- !u!114 &2016480590
 MonoBehaviour:

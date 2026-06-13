@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public class StatusInstance
 {
     public StatusDefinition Definition { get; }
@@ -52,6 +54,11 @@ public class StatusInstance
     public void MarkAsExpired()
     {
         IsExpired = true;
+    }
+
+    public IEnumerable<StatModifier> GetModifiers(StatType stat) //TODO: implement GetModifiers
+    {
+        return null;
     }
 
     private float CalculateRemainingDuration()

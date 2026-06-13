@@ -2,14 +2,25 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 
-public class StatusSystem
+public class StatusSystem : IStatModifierProvider
 {
     public event Action<StatusAppliedEvent> StatusAppliedEvent;
     public event Action<StatusRefreshedEvent> StatusRefreshedEvent;
     public event Action<StatusExpiredEvent> StatusExpiredEvent;
     public event Action<StatusRemovedEvent> StatusRemovedEvent;
 
+    public IReadOnlyList<StatusInstance> ActiveStatuses => activeStatuses;
+
     private readonly List<StatusInstance> activeStatuses = new();
+
+    public IEnumerable<StatModifier> GetModifiers(StatType stat)
+    {
+        foreach (var status in activeStatuses)
+        {
+            foreach (var mod in status.GetModifiers(stat))
+                yield return mod;
+        }
+    }
 
     public void Apply(StatusDefinition definition, StatusApplicationContext applicationContext)
     {
